@@ -30,7 +30,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
   Future<void> loadModel() async {
     try {
-      _interpreter = await tflite.Interpreter.fromAsset("assets/tflite_model.tflite");
+      _interpreter = await tflite.Interpreter.fromAsset("assets/10weed_model.tflite");
       print("Model loaded successfully");
     } catch (e) {
       print("Error loading model: $e");
@@ -39,7 +39,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
   Future<void> loadLabels() async {
     try {
-      String jsonString = await rootBundle.loadString('assets/label_map.json');
+      String jsonString = await rootBundle.loadString('assets/label_maptry.json');
       Map<String, dynamic> jsonMap = jsonDecode(jsonString);
       setState(() {
         weedLabels = jsonMap.map((key, value) => MapEntry(value as int, key));
@@ -68,7 +68,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
     Float32List input = await preprocessImage(image);
     var inputTensor = input.buffer.asFloat32List().reshape([1, 224, 224, 3]);
-    var outputTensor = List.filled(1 * 5, 0.0).reshape([1, 5]);
+    var outputTensor = List.filled(1 * 10, 0.0).reshape([1, 10]);
 
     _interpreter!.run(inputTensor, outputTensor);
 
@@ -84,7 +84,18 @@ class _CameraScreenState extends State<CameraScreen> {
     List<String> treatmentInfo = [];
 
     switch (weedName) {
-      case "Cypherus Difformis":
+      case "Actual Cyperus Rotundus":
+        height = "1.5 ft";
+        dangerLevel = "7/10";
+        treatable = "Yes";
+        treatmentInfo = [
+          "Use selective herbicides such as Halosulfuron.",
+          "Improve soil drainage to prevent spread.",
+          "Regularly remove manually to control infestation.",
+        ];
+        break;
+
+      case "Actual Cypherus Difformis":
         height = "2 ft";
         dangerLevel = "8/10";
         treatable = "Yes";
@@ -95,7 +106,29 @@ class _CameraScreenState extends State<CameraScreen> {
         ];
         break;
 
-      case "Pistia":
+      case "Actual Cypherus Iria":
+        height = "2.5 ft";
+        dangerLevel = "6/10";
+        treatable = "Yes";
+        treatmentInfo = [
+          "Apply herbicide combinations containing Bensulfuron.",
+          "Control with mulching in non-crop areas.",
+          "Ensure proper field drainage to reduce growth.",
+        ];
+        break;
+
+      case "Actual Echinocloa Glabrescens":
+        height = "3 ft";
+        dangerLevel = "8/10";
+        treatable = "Yes";
+        treatmentInfo = [
+          "Apply post-emergence herbicides such as Fenoxaprop-P.",
+          "Use water management strategies to suppress growth.",
+          "Hand weeding is effective in small infestations.",
+        ];
+        break;
+
+      case "Actual Pistia_Stratiotes":
         height = "1 ft";
         dangerLevel = "7/10";
         treatable = "Yes";
@@ -106,7 +139,7 @@ class _CameraScreenState extends State<CameraScreen> {
         ];
         break;
 
-      case "Sphecnoclea":
+      case "Actual Sphecnoclea_Zeynalica":
         height = "3 ft";
         dangerLevel = "9/10";
         treatable = "No";
@@ -117,7 +150,7 @@ class _CameraScreenState extends State<CameraScreen> {
         ];
         break;
 
-      case "Crusgalli":
+      case "Actual_Echinocloa_Crusgalli":
         height = "4 ft";
         dangerLevel = "6/10";
         treatable = "Yes";
@@ -128,7 +161,7 @@ class _CameraScreenState extends State<CameraScreen> {
         ];
         break;
 
-      case "Fim":
+      case "Actual_Fimbristylis littoralis":
         height = "1.5 ft";
         dangerLevel = "5/10";
         treatable = "Yes";
@@ -139,6 +172,28 @@ class _CameraScreenState extends State<CameraScreen> {
         ];
         break;
 
+      case "Actual_Leptochloa Chinesis":
+        height = "2.5 ft";
+        dangerLevel = "7/10";
+        treatable = "Yes";
+        treatmentInfo = [
+          "Use pre-emergence herbicides for control.",
+          "Maintain proper field water levels to suppress growth.",
+          "Hand weeding is effective in small areas.",
+        ];
+        break;
+
+      case "Actual_Ludwigia Octalvis":
+        height = "3 ft";
+        dangerLevel = "6/10";
+        treatable = "Yes";
+        treatmentInfo = [
+          "Use herbicide B for targeted control.",
+          "Manual removal is effective if done early.",
+          "Prevent spread by cutting off flowering parts.",
+        ];
+        break;
+
       default:
         height = "Unknown";
         dangerLevel = "Unknown";
@@ -146,6 +201,8 @@ class _CameraScreenState extends State<CameraScreen> {
         treatmentInfo = ["No specific treatment available for this weed."];
         break;
     }
+
+
 
     // Navigate to WeedDetailsScreen with the weed details and image
     Navigator.push(

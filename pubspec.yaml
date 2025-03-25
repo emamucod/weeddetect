@@ -32,7 +32,9 @@ flutter:
     - assets/tflite_model.tflite
     - assets/label_map.json
     - assets/topography.png
-
+    - assets/10weed_model.tflite
+    - assets/label_maptry.json
+    
   fonts:
     - family: Causten
       fonts:
