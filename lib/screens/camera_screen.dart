@@ -30,7 +30,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
   Future<void> loadModel() async {
     try {
-      _interpreter = await tflite.Interpreter.fromAsset("assets/10weed_model_pt1.tflite");
+      _interpreter = await tflite.Interpreter.fromAsset("assets/10weedwithpipelinetrial4.tflite");
       print("Model loaded successfully");
     } catch (e) {
       print("Error loading model: $e");
@@ -39,7 +39,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
   Future<void> loadLabels() async {
     try {
-      String jsonString = await rootBundle.loadString('assets/label_maptry1.json');
+      String jsonString = await rootBundle.loadString('assets/label_maptry4.json');
       Map<String, dynamic> jsonMap = jsonDecode(jsonString);
       setState(() {
         weedLabels = jsonMap.map((key, value) => MapEntry(value as int, key));
@@ -73,7 +73,13 @@ class _CameraScreenState extends State<CameraScreen> {
     _interpreter!.run(inputTensor, outputTensor);
 
     List<double> outputProbabilities = List<double>.from(outputTensor[0]);
-    print("Output Probabilities: $outputProbabilities");
+    // Add this block to print probabilities
+    print("----- Model Output Probabilities -----");
+    for (int i = 0; i < outputProbabilities.length; i++) {
+      String label = weedLabels[i] ?? "Unknown";
+      print("${label.padRight(20)}: ${outputProbabilities[i].toStringAsFixed(4)}");
+    }
+    print("-------------------------------------");
     
     int predictedIndex = outputProbabilities.indexOf(outputProbabilities.reduce((a, b) => a > b ? a : b));
     String weedName = weedLabels[predictedIndex] ?? "Unknown Weed";
@@ -83,81 +89,88 @@ class _CameraScreenState extends State<CameraScreen> {
     String treatable = "";
     List<String> treatmentInfo = [];
 
-    switch (weedName) {
+   switch (weedName) {
       case "Cyperus Rotundus":
         height = "1.5 ft";
         dangerLevel = "7/10";
         treatable = "Yes";
         treatmentInfo = [
-          "Use selective herbicides such as Halosulfuron.",
-          "Improve soil drainage to prevent spread.",
-          "Regularly remove manually to control infestation.",
+          "Pre-emergence: Apply sulfentrazone (0.25-0.38 kg/ha) or oxyfluorfen (0.5-1.0 kg/ha)",
+          "Post-emergence: Use halosulfuron-methyl (70 g/ha) or glyphosate (1.0-1.5 kg/ha) for non-crop areas",
+          "Cultural: Deep plowing to expose tubers to sunlight, followed by repeated tillage",
+          "Biological: Fusarium oxysporum fungus shows potential for biocontrol"
         ];
         break;
 
-      case "Cypherus Difformis":
+      case "Cyperus Difformis":
         height = "2 ft";
         dangerLevel = "8/10";
         treatable = "Yes";
         treatmentInfo = [
-          "Use herbicide X for effective control.",
-          "Remove manually if the infestation is small.",
-          "Avoid overwatering to prevent growth.",
+          "Pre-emergence: Apply pretilachlor (0.75 kg/ha) or butachlor (1.0 kg/ha) in rice fields",
+          "Post-emergence: Use bispyribac-sodium (25 g/ha) or azimsulfuron (20 g/ha)",
+          "Water management: Maintain 2-5 cm water depth for first 3 weeks after transplanting",
+          "Rotation: Alternate rice with upland crops to disrupt life cycle"
         ];
         break;
 
-      case "Cypherus Iria":
+      case "Cyperus Iria":
         height = "2.5 ft";
         dangerLevel = "6/10";
         treatable = "Yes";
         treatmentInfo = [
-          "Apply herbicide combinations containing Bensulfuron.",
-          "Control with mulching in non-crop areas.",
-          "Ensure proper field drainage to reduce growth.",
+          "Herbicides: Apply bensulfuron-methyl (60 g/ha) or pyrazosulfuron-ethyl (20 g/ha)",
+          "Mechanical: Hand weeding before flowering stage (30-40 days after emergence)",
+          "Cultural: Use stale seedbed technique with shallow tillage",
+          "Biological: Ducks in rice fields effectively consume young plants"
         ];
         break;
 
-      case "Echinocloa Glabrescens":
+      case "Echinochloa Glabrescens":
         height = "3 ft";
         dangerLevel = "8/10";
         treatable = "Yes";
         treatmentInfo = [
-          "Apply post-emergence herbicides such as Fenoxaprop-P.",
-          "Use water management strategies to suppress growth.",
-          "Hand weeding is effective in small infestations.",
+          "Pre-emergence: Apply thiobencarb (1.5 kg/ha) or pendimethalin (1.0 kg/ha)",
+          "Post-emergence: Use fenoxaprop-P-ethyl (120 g/ha) or cyhalofop-butyl (200 g/ha)",
+          "Cultural: Use clean seeds and maintain proper water depth (5-10 cm)",
+          "Rotation: Follow rice with soybean or maize to break cycle"
         ];
         break;
 
-      case "Pistia Stratiotes":
+      case "Pistia stratiotes":
         height = "1 ft";
         dangerLevel = "7/10";
         treatable = "Yes";
         treatmentInfo = [
-          "Apply herbicide Y to control Pistia.",
-          "Use biological control methods like weevils.",
-          "Regularly clean water bodies to prevent spread.",
+          "Chemical: Apply glyphosate (1.5-2.0 kg/ha) or diquat (2-4 kg/ha) to foliage",
+          "Mechanical: Regular removal with nets or harvesters",
+          "Biological: Neochetina weevils provide effective control (release 1000-2000 adults/ha)",
+          "Prevention: Install barriers in irrigation channels"
         ];
         break;
 
-      case "Sphecnoclea Zeynalica":
+      case "Sphenoclea zeylanica":
         height = "3 ft";
         dangerLevel = "9/10";
         treatable = "No";
         treatmentInfo = [
-          "This weed is highly resistant to herbicides.",
-          "Manual removal is the only effective method.",
-          "Prevent spread by isolating affected areas.",
+          "Resistant to most herbicides - requires integrated approach",
+          "Mechanical: Hand pulling before seed set (wear gloves as sap may irritate)",
+          "Cultural: Maintain dense crop canopy through proper spacing and fertilization",
+          "Biological: Research ongoing with potential fungal pathogens"
         ];
         break;
 
-      case "Echinocloa Crusgalli":
+      case "Echinochloa Crusgalli":
         height = "4 ft";
         dangerLevel = "6/10";
         treatable = "Yes";
         treatmentInfo = [
-          "Use herbicide Z for effective control.",
-          "Rotate crops to prevent recurrence.",
-          "Ensure proper drainage to reduce growth.",
+          "Pre-emergence: Apply pretilachlor (0.75 kg/ha) or oxadiazon (1.0 kg/ha)",
+          "Post-emergence: Use quinclorac (0.5 kg/ha) or propanil (3.0 kg/ha)",
+          "Cultural: Flood fields to 10-15 cm depth for 3-4 days after transplanting",
+          "Biological: Rice-fish farming reduces infestation"
         ];
         break;
 
@@ -166,31 +179,34 @@ class _CameraScreenState extends State<CameraScreen> {
         dangerLevel = "5/10";
         treatable = "Yes";
         treatmentInfo = [
-          "Apply herbicide A for quick results.",
-          "Use mulch to suppress growth.",
-          "Regularly monitor for new infestations.",
+          "Herbicides: Apply 2,4-D (1.0 kg/ha) or metsulfuron-methyl (4 g/ha)",
+          "Mechanical: Raking or harrowing in early growth stages",
+          "Cultural: Improve drainage and avoid water stagnation",
+          "Biological: No effective agents identified yet"
         ];
         break;
 
-      case "Leptochloa Chinesis":
+      case "Leptochloa chinensis":
         height = "2.5 ft";
         dangerLevel = "7/10";
         treatable = "Yes";
         treatmentInfo = [
-          "Use pre-emergence herbicides for control.",
-          "Maintain proper field water levels to suppress growth.",
-          "Hand weeding is effective in small areas.",
+          "Pre-emergence: Apply pendimethalin (1.0 kg/ha) or oxadiazon (1.0 kg/ha)",
+          "Post-emergence: Use cyhalofop-butyl (200 g/ha) or fenoxaprop-P-ethyl (120 g/ha)",
+          "Cultural: Use competitive rice varieties with early vigor",
+          "Mechanical: Rogue out plants before flowering"
         ];
         break;
 
-      case "Ludwigia Octalvis":
+      case "Ludwigia octovalvis":
         height = "3 ft";
         dangerLevel = "6/10";
         treatable = "Yes";
         treatmentInfo = [
-          "Use herbicide B for targeted control.",
-          "Manual removal is effective if done early.",
-          "Prevent spread by cutting off flowering parts.",
+          "Chemical: Apply triclopyr (1.0 kg/ha) or glyphosate (2.0 kg/ha) to foliage",
+          "Mechanical: Cutting below water surface to drown plants",
+          "Cultural: Reduce nutrient runoff into water bodies",
+          "Biological: Research ongoing with leaf-feeding beetles"
         ];
         break;
 
@@ -201,7 +217,6 @@ class _CameraScreenState extends State<CameraScreen> {
         treatmentInfo = ["No specific treatment available for this weed."];
         break;
     }
-
 
 
     // Navigate to WeedDetailsScreen with the weed details and image
@@ -246,18 +261,9 @@ class _CameraScreenState extends State<CameraScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      print('Returning to Dashboard');
-                      Navigator.pop(context);
-                    },
-                    child: Icon(Icons.arrow_back_ios_new, color: Colors.black),
-                  ),
-                  Spacer(),
-                  Text("Camera", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  Spacer(),
-                  SizedBox(width: 24), // For balance with back icon
+                  Text("Camera", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily:"Poppins")),
                 ],
               ),
             ),
@@ -266,7 +272,7 @@ class _CameraScreenState extends State<CameraScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
               child: Container(
-                height: 220,
+                height: 500,
                 width: double.infinity,
                 decoration: BoxDecoration(
                   color: Colors.grey[200],

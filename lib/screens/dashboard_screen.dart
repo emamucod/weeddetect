@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'camera_screen.dart'; // Assuming you have a CameraScreen
+import 'camera_screen.dart';
+import 'about.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,9 +14,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Weed Detection App',
       theme: ThemeData(
-        primaryColor: const Color(0xFF5D6253), // Custom color for the app
+        primaryColor: const Color(0xFF5D6253),
         colorScheme: ColorScheme.fromSwatch().copyWith(secondary: const Color(0xFF5D6253)),
-        fontFamily: 'Poppins', // Set Poppins as the default font
+        fontFamily: 'Poppins',
       ),
       home: const DashboardScreen(),
     );
@@ -33,10 +34,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedIndex = 0;
 
   static final List<Widget> _pages = [
-    HomeScreen(),
-    CameraScreen(),
-    const PlaceholderScreen(title: 'Profile Screen Coming Soon'),
-    const PlaceholderScreen(title: 'About Screen Coming Soon'),
+    const HomeScreen(),
+    const CameraScreen(),
+    const PlaceholderScreen(title: 'Gallery Screen Coming Soon'),
+    const PlaceholderScreen(title: 'Profile Page Coming Soon'),
+    const AboutScreen()
   ];
 
   void _onItemTapped(int index) {
@@ -51,11 +53,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       appBar: AppBar(
         title: Row(
           children: [
-            // WEED in an orange container
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               decoration: BoxDecoration(
-                color: const Color(0xFFF26129), // Orange background
+                color: const Color(0xFFF26129),
                 borderRadius: BorderRadius.circular(30),
               ),
               child: const Text(
@@ -68,8 +69,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               ),
             ),
-            const SizedBox(width: 4), // Space between "WEED" and "DETECTION"
-            // DETECTION text
+            const SizedBox(width: 4),
             const Text(
               "DETECTION",
               style: TextStyle(
@@ -81,18 +81,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           ],
         ),
-        backgroundColor: const Color(0xFF5D6253), // Custom color for AppBar
+        backgroundColor: const Color(0xFF5D6253),
       ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: const Color(0xFF5D6253), // Custom color for selected icons
+        selectedItemColor: const Color(0xFF5D6253),
         unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(icon: Icon(Icons.camera), label: "Camera"),
+           BottomNavigationBarItem(icon: Icon(Icons.image), label: "Gallery"),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
           BottomNavigationBarItem(icon: Icon(Icons.info), label: "About"),
         ],
@@ -107,28 +108,60 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Padding(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Welcome to App",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'Poppins', // Apply Poppins
+            // Rounded container for welcome message and field overview
+            Container(
+              padding: const EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: const Color(0xFF5D6253).withOpacity(0.2),
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.2),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              decoration: InputDecoration(
-                hintText: 'Search for weeds...',
-                hintStyle: const TextStyle(fontFamily: 'Poppins'), // Apply Poppins
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Welcome back!",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontFamily: 'Poppins',
+                          color: Colors.black,
+                        ),
+                      ),
+                      Text(
+                        _getFormattedDate(),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontFamily: 'Poppins',
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    "Field Overview",
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Poppins',
+                    ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 20),
@@ -137,7 +170,7 @@ class HomeScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                fontFamily: 'Poppins', // Apply Poppins
+                fontFamily: 'Poppins',
               ),
             ),
             const SizedBox(height: 10),
@@ -151,22 +184,44 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             const Text(
-              "Recent Detections",
+              "Field Status Overview",
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                fontFamily: 'Poppins', // Apply Poppins
+                fontFamily: 'Poppins',
               ),
             ),
             const SizedBox(height: 10),
-            Expanded(
-              child: ListView(
-                children: [
-                  _buildDetectionCard("Weed Detected in Field A", "2 hours ago"),
-                  _buildDetectionCard("Weed Detected in Field B", "5 hours ago"),
-                  _buildDetectionCard("Weed Detected in Field C", "1 day ago"),
-                ],
-              ),
+            _buildInfoCard(
+              "Field Health",
+              "Good",
+              Icons.health_and_safety,
+              Colors.green,
+              "Fields should show healthy crop growth with minimal weed presence."
+            ),
+            const SizedBox(height: 10),
+            _buildInfoCard(
+              "Common Weed Type",
+              "Barnyard Grass",
+              Icons.grass,
+              Colors.orange,
+              "Found in 65% of recent field inspections."
+            ),
+            const SizedBox(height: 10),
+            _buildInfoCard(
+              "Treatment ",
+              "Checking for Weeds",
+              Icons.calendar_today,
+              Colors.blue,
+              "Check around the area every 2-3 days."
+            ),
+            const SizedBox(height: 10),
+            _buildInfoCard(
+              "Weed Coverage",
+              "Types",
+              Icons.pie_chart,
+              Colors.purple,
+              "10 Rice Weeds to be identified"
             ),
           ],
         ),
@@ -191,7 +246,7 @@ class HomeScreen extends StatelessWidget {
             label,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
-              fontFamily: 'Poppins', // Apply Poppins
+              fontFamily: 'Poppins',
             ),
           ),
         ],
@@ -199,22 +254,66 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDetectionCard(String title, String time) {
+  Widget _buildInfoCard(String title, String value, IconData icon, Color color, String description) {
     return Card(
-      margin: const EdgeInsets.only(bottom: 10),
-      child: ListTile(
-        leading: const Icon(Icons.warning, color: Colors.orange),
-        title: Text(
-          title,
-          style: const TextStyle(fontFamily: 'Poppins'), // Apply Poppins
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.2),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(icon, color: color, size: 24),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Poppins',
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: color,
+                fontFamily: 'Poppins',
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              description,
+              style: const TextStyle(
+                fontSize: 14,
+                fontFamily: 'Poppins',
+                color: Colors.grey,
+              ),
+            ),
+          ],
         ),
-        subtitle: Text(
-          time,
-          style: const TextStyle(fontFamily: 'Poppins'), // Apply Poppins
-        ),
-        trailing: const Icon(Icons.arrow_forward),
       ),
     );
+  }
+
+  String _getFormattedDate() {
+    final now = DateTime.now();
+    return "${now.day}/${now.month}/${now.year}";
   }
 }
 
@@ -230,10 +329,9 @@ class PlaceholderScreen extends StatelessWidget {
         style: const TextStyle(
           fontSize: 24,
           fontWeight: FontWeight.bold,
-          fontFamily: 'Poppins', // Apply Poppins
+          fontFamily: 'Poppins',
         ),
       ),
     );
   }
 }
-

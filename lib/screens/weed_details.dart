@@ -37,7 +37,7 @@ class WeedDetailsScreen extends StatelessWidget {
             if (image != null)
               ClipRRect(
                 borderRadius: BorderRadius.circular(20),
-                child: Image.file(image!, height: 200, width: double.infinity, fit: BoxFit.cover),
+                child: Image.file(image!, height: 500, width: double.infinity, fit: BoxFit.cover),
               ),
             const SizedBox(height: 20),
 
