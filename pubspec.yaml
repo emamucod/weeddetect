@@ -34,6 +34,8 @@ flutter:
     - assets/topography.png
     - assets/10weed_model.tflite
     - assets/label_maptry.json
+    - assets/10weed_model_pt1.tflite
+    - assets/label_maptry1.json
     
   fonts:
     - family: Causten

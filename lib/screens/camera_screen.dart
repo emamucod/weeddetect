@@ -30,7 +30,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
   Future<void> loadModel() async {
     try {
-      _interpreter = await tflite.Interpreter.fromAsset("assets/10weed_model.tflite");
+      _interpreter = await tflite.Interpreter.fromAsset("assets/10weed_model_pt1.tflite");
       print("Model loaded successfully");
     } catch (e) {
       print("Error loading model: $e");
@@ -39,7 +39,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
   Future<void> loadLabels() async {
     try {
-      String jsonString = await rootBundle.loadString('assets/label_maptry.json');
+      String jsonString = await rootBundle.loadString('assets/label_maptry1.json');
       Map<String, dynamic> jsonMap = jsonDecode(jsonString);
       setState(() {
         weedLabels = jsonMap.map((key, value) => MapEntry(value as int, key));
@@ -74,7 +74,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
     List<double> outputProbabilities = List<double>.from(outputTensor[0]);
     print("Output Probabilities: $outputProbabilities");
-
+    
     int predictedIndex = outputProbabilities.indexOf(outputProbabilities.reduce((a, b) => a > b ? a : b));
     String weedName = weedLabels[predictedIndex] ?? "Unknown Weed";
 
@@ -84,7 +84,7 @@ class _CameraScreenState extends State<CameraScreen> {
     List<String> treatmentInfo = [];
 
     switch (weedName) {
-      case "Actual Cyperus Rotundus":
+      case "Cyperus Rotundus":
         height = "1.5 ft";
         dangerLevel = "7/10";
         treatable = "Yes";
@@ -95,7 +95,7 @@ class _CameraScreenState extends State<CameraScreen> {
         ];
         break;
 
-      case "Actual Cypherus Difformis":
+      case "Cypherus Difformis":
         height = "2 ft";
         dangerLevel = "8/10";
         treatable = "Yes";
@@ -106,7 +106,7 @@ class _CameraScreenState extends State<CameraScreen> {
         ];
         break;
 
-      case "Actual Cypherus Iria":
+      case "Cypherus Iria":
         height = "2.5 ft";
         dangerLevel = "6/10";
         treatable = "Yes";
@@ -117,7 +117,7 @@ class _CameraScreenState extends State<CameraScreen> {
         ];
         break;
 
-      case "Actual Echinocloa Glabrescens":
+      case "Echinocloa Glabrescens":
         height = "3 ft";
         dangerLevel = "8/10";
         treatable = "Yes";
@@ -128,7 +128,7 @@ class _CameraScreenState extends State<CameraScreen> {
         ];
         break;
 
-      case "Actual Pistia_Stratiotes":
+      case "Pistia Stratiotes":
         height = "1 ft";
         dangerLevel = "7/10";
         treatable = "Yes";
@@ -139,7 +139,7 @@ class _CameraScreenState extends State<CameraScreen> {
         ];
         break;
 
-      case "Actual Sphecnoclea_Zeynalica":
+      case "Sphecnoclea Zeynalica":
         height = "3 ft";
         dangerLevel = "9/10";
         treatable = "No";
@@ -150,7 +150,7 @@ class _CameraScreenState extends State<CameraScreen> {
         ];
         break;
 
-      case "Actual_Echinocloa_Crusgalli":
+      case "Echinocloa Crusgalli":
         height = "4 ft";
         dangerLevel = "6/10";
         treatable = "Yes";
@@ -161,7 +161,7 @@ class _CameraScreenState extends State<CameraScreen> {
         ];
         break;
 
-      case "Actual_Fimbristylis littoralis":
+      case "Fimbristylis littoralis":
         height = "1.5 ft";
         dangerLevel = "5/10";
         treatable = "Yes";
@@ -172,7 +172,7 @@ class _CameraScreenState extends State<CameraScreen> {
         ];
         break;
 
-      case "Actual_Leptochloa Chinesis":
+      case "Leptochloa Chinesis":
         height = "2.5 ft";
         dangerLevel = "7/10";
         treatable = "Yes";
@@ -183,7 +183,7 @@ class _CameraScreenState extends State<CameraScreen> {
         ];
         break;
 
-      case "Actual_Ludwigia Octalvis":
+      case "Ludwigia Octalvis":
         height = "3 ft";
         dangerLevel = "6/10";
         treatable = "Yes";
