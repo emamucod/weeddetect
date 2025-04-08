@@ -2,29 +2,13 @@ import 'package:flutter/material.dart';
 import 'camera_screen.dart';
 import 'about.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Weed Detection App',
-      theme: ThemeData(
-        primaryColor: const Color(0xFF5D6253),
-        colorScheme: ColorScheme.fromSwatch().copyWith(secondary: const Color(0xFF5D6253)),
-        fontFamily: 'Poppins',
-      ),
-      home: const DashboardScreen(),
-    );
-  }
-}
-
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+  final String userEmail; // Add user email parameter
+
+  const DashboardScreen({
+    super.key,
+    required this.userEmail,
+  }); // Update constructor
 
   @override
   _DashboardScreenState createState() => _DashboardScreenState();
@@ -33,12 +17,15 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedIndex = 0;
 
-  static final List<Widget> _pages = [
+  // Make pages a getter to ensure fresh instances with current user email
+  List<Widget> get _pages => [
     const HomeScreen(),
-    const CameraScreen(),
+    CameraScreen(
+      userEmail: widget.userEmail,
+    ), // Pass user email to CameraScreen
     const PlaceholderScreen(title: 'Gallery Screen Coming Soon'),
     const PlaceholderScreen(title: 'Profile Page Coming Soon'),
-    const AboutScreen()
+    const AboutScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -93,7 +80,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(icon: Icon(Icons.camera), label: "Camera"),
-           BottomNavigationBarItem(icon: Icon(Icons.image), label: "Gallery"),
+          BottomNavigationBarItem(icon: Icon(Icons.image), label: "Gallery"),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
           BottomNavigationBarItem(icon: Icon(Icons.info), label: "About"),
         ],
@@ -197,7 +184,7 @@ class HomeScreen extends StatelessWidget {
               "Good",
               Icons.health_and_safety,
               Colors.green,
-              "Fields should show healthy crop growth with minimal weed presence."
+              "Fields should show healthy crop growth with minimal weed presence.",
             ),
             const SizedBox(height: 10),
             _buildInfoCard(
@@ -205,7 +192,7 @@ class HomeScreen extends StatelessWidget {
               "Barnyard Grass",
               Icons.grass,
               Colors.orange,
-              "Found in 65% of recent field inspections."
+              "Found in 65% of recent field inspections.",
             ),
             const SizedBox(height: 10),
             _buildInfoCard(
@@ -213,7 +200,7 @@ class HomeScreen extends StatelessWidget {
               "Checking for Weeds",
               Icons.calendar_today,
               Colors.blue,
-              "Check around the area every 2-3 days."
+              "Check around the area every 2-3 days.",
             ),
             const SizedBox(height: 10),
             _buildInfoCard(
@@ -221,7 +208,7 @@ class HomeScreen extends StatelessWidget {
               "Types",
               Icons.pie_chart,
               Colors.purple,
-              "10 Rice Weeds to be identified"
+              "10 Rice Weeds to be identified",
             ),
           ],
         ),
@@ -254,12 +241,16 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoCard(String title, String value, IconData icon, Color color, String description) {
+  Widget _buildInfoCard(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+    String description,
+  ) {
     return Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
